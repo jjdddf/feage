@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.jinke1.feage">
+    package="com.aabb">
 
     <!-- Permissions -->
     <uses-permission android:name="android.permission.CAMERA" />
@@ -28,7 +28,7 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -37,21 +37,15 @@
             </intent-filter>
         </activity>
 
-        <!-- Virtual Camera Service -->
+        <!-- Virtual Camera Service（我们新建的，直接在com.aabb包下） -->
         <service
-            android:name=".service.VirtualCameraService"
+            android:name=".VirtualCameraService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.jinke1.feage.VIRTUAL_CAMERA" />
+                <action android:name="com.aabb.VIRTUAL_CAMERA" />
             </intent-filter>
         </service>
-
-        <!-- Face Swap Service -->
-        <service
-            android:name=".service.FaceSwapService"
-            android:enabled="true"
-            android:exported="false" />
 
     </application>
 
