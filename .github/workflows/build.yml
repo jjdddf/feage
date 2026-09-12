@@ -1,6 +1,6 @@
 name: Build Feage
 on:
-  workflow_dispatch: # 网页手动点击按钮编译
+  workflow_dispatch:
   push:
     branches: [ main ]
 
@@ -8,30 +8,32 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # 拉取源码
       - name: Checkout source
         uses: actions/checkout@v4
 
-      # 配置Android配套JDK17
       - name: Setup JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # 创建assets目录，下载人脸模型
+      # 下载MediaPipe人脸模型
       - name: Download MediaPipe face landmarker model
         run: |
           mkdir -p app/src/main/assets
           wget https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task -O app/src/main/assets/face_landmarker.task
+      
+      # ==========新增：自动生成gradlew包装文件==========
+      - name: Generate gradle wrapper
+        run: |
+          gradle wrapper --gradle-version 8.4
+          chmod +x gradlew
 
-      # Gradle编译Debug APK
+      # 编译APK
       - name: Build debug APK
         run: |
-          chmod +x gradlew
           ./gradlew assembleDebug
 
-      # 上传成品APK，编译完成后下载
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
