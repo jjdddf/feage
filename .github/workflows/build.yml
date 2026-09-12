@@ -11,31 +11,27 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Setup JDK17
+      - name: Setup JDK 17
         uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # 下载MediaPipe模型
+      # 配置Gradle 8.4（官方action，自动处理，不用手动下gradlew）
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.4'
+
+      # 下载MediaPipe人脸模型
       - name: Download MediaPipe model
         run: |
           mkdir -p app/src/main/assets
           wget https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task -O app/src/main/assets/face_landmarker.task
 
-      # 【重点】手动下载gradle wrapper8.4，避开系统gradle9.7问题
-      - name: Download Gradle Wrapper 8.4
-        run: |
-          mkdir -p gradle/wrapper
-          wget https://raw.githubusercontent.com/gradle/gradle/v8.4/gradle/wrapper/gradlew -O gradlew
-          wget https://raw.githubusercontent.com/gradle/gradle/v8.4/gradle/wrapper/gradlew.bat -O gradlew.bat
-          wget https://raw.githubusercontent.com/gradle/gradle/v8.4/gradle/wrapper/gradle-wrapper.properties -O gradle/wrapper/gradle-wrapper.properties
-          wget https://repo1.maven.org/maven2/org/gradle/gradle-wrapper/8.4/gradle-wrapper-8.4.jar -O gradle/wrapper/gradle-wrapper.jar
-          chmod +x gradlew
-
-      # 编译Debug APK
+      # 编译APK
       - name: Build APK
-        run: ./gradlew assembleDebug
+        run: gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
